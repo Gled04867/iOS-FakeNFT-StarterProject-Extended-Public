@@ -12,6 +12,18 @@ struct CatalogView: View {
     @State private var viewModel: CatalogViewModel
     @State private var isSortDialogPresented = false
     @State private var isErrorAlertPresented = false
+    @State private var selectedCollection: NftCollection?
+
+    private var isCollectionPresented: Binding<Bool> {
+        Binding(
+            get: { selectedCollection != nil },
+            set: { isPresented in
+                if !isPresented {
+                    selectedCollection = nil
+                }
+            }
+        )
+    }
 
     init(viewModel: CatalogViewModel) {
         _viewModel = State(initialValue: viewModel)
@@ -35,6 +47,9 @@ struct CatalogView: View {
                                 viewModel.startLoadingCollections()
                             }
                         }
+                        .onTapGesture {
+                            selectedCollection = collection
+                        }
                 }
                 if viewModel.isLoading && !viewModel.collections.isEmpty {
                     ProgressView()
@@ -46,6 +61,11 @@ struct CatalogView: View {
             .scrollContentBackground(.hidden)
             .contentMargins(.horizontal, 0, for: .scrollContent)
             .contentMargins(.top, 20, for: .scrollContent)
+            .navigationDestination(isPresented: isCollectionPresented) {
+                if let selectedCollection {
+                    CollectionView(collection: selectedCollection)
+                }
+            }
             .task {
                 let option = CatalogSortOption(rawValue: savedSortOption) ?? .byNftCount
                 await viewModel.updateSortOption(option)
