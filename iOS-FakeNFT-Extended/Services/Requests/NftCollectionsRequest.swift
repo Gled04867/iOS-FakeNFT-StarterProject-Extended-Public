@@ -10,8 +10,13 @@ import Foundation
 struct NftCollectionsRequest: NetworkRequest {
     let page: Int
     let size: Int
+    let sortBy: String?
 
     var endpoint: URL? {
-        URL(string: "\(RequestConstants.baseURL)/api/v1/collections?page=\(page)&size=\(size)")
+        if let sortBy {
+            URL(string: "\(RequestConstants.baseURL)/api/v1/collections?page=\(page)&size=\(size)&sortBy=\(sortBy)")
+        } else {
+            URL(string: "\(RequestConstants.baseURL)/api/v1/collections?page=\(page)&size=\(size)")
+        }
     }
 }

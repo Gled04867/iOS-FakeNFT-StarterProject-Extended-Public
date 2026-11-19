@@ -8,7 +8,7 @@
 import Foundation
 
 protocol CatalogService {
-    func loadCollections(page: Int, size: Int) async throws -> [NftCollection]
+    func loadCollections(page: Int, size: Int, sortBy: String?) async throws -> [NftCollection]
 }
 
 actor CatalogServiceImpl: CatalogService {
@@ -18,8 +18,12 @@ actor CatalogServiceImpl: CatalogService {
         self.networkClient = networkClient
     }
 
-    func loadCollections(page: Int, size: Int) async throws -> [NftCollection] {
-        let request = NftCollectionsRequest(page: page, size: size)
+    func loadCollections(page: Int, size: Int, sortBy: String?) async throws -> [NftCollection] {
+        let request = NftCollectionsRequest(
+            page: page,
+            size: size,
+            sortBy: sortBy
+        )
         let collections: [NftCollection] = try await networkClient.send(request: request)
         return collections
     }

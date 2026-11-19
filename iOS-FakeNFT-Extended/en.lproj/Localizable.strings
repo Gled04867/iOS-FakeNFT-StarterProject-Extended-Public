@@ -6,5 +6,5 @@
 "Error.title" = "Ошибка";
 "Sorting.title" = "Сортировка";
 "Sorting.byName" = "По названию";
-"Sorting.byNFTCount" = "По количеству NFT";
+"Sorting.byNftCount" = "По количеству NFT";
 "Close.title" = "Закрыть";

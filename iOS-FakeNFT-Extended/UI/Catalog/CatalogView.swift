@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct CatalogView: View {
+    @AppStorage("catalogSortOption") private var savedSortOption = CatalogSortOption.byNftCount.rawValue
     @State private var viewModel: CatalogViewModel
     @State private var isSortDialogPresented = false
 
@@ -30,7 +31,7 @@ struct CatalogView: View {
                         ))
                         .task {
                             if collection.id == viewModel.collections.last?.id {
-                                await viewModel.loadCollections()
+                                viewModel.startLoadingCollections()
                             }
                         }
                 }
@@ -39,7 +40,9 @@ struct CatalogView: View {
             .contentMargins(.horizontal, 0, for: .scrollContent)
             .contentMargins(.top, 20, for: .scrollContent)
             .task {
-                await viewModel.loadCollections()
+                let option = CatalogSortOption(rawValue: savedSortOption) ?? .byNftCount
+                await viewModel.updateSortOption(option)
+                viewModel.startLoadingCollections()
             }
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
@@ -48,7 +51,7 @@ struct CatalogView: View {
                     } label: {
                         Image(.sort)
                             .frame(width: 42, height: 42)
-                            .foregroundStyle(.ypBlack)
+                            .foregroundStyle(.black)
                     }
                 }
             }
@@ -58,10 +61,10 @@ struct CatalogView: View {
                 titleVisibility: .visible
             ) {
                 Button("Sorting.byName") {
-                    //TODO: add sort by name
+                    changeSortOption(.byName)
                 }
-                Button("Sorting.byNFTCount") {
-                    //TODO: add sort by count NFT
+                Button("Sorting.byNftCount") {
+                    changeSortOption(.byNftCount)
                 }
                 Button("Close.title", role: .cancel) {}
             }
@@ -70,6 +73,15 @@ struct CatalogView: View {
                     ProgressView()
                 }
             }
+        }
+    }
+
+    private func changeSortOption(_ option: CatalogSortOption) {
+        savedSortOption = option.rawValue
+
+        Task {
+            await viewModel.updateSortOption(option)
+            viewModel.startLoadingCollections()
         }
     }
 }
