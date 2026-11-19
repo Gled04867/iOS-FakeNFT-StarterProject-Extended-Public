@@ -11,6 +11,7 @@ struct CatalogView: View {
     @AppStorage("catalogSortOption") private var savedSortOption = CatalogSortOption.byNftCount.rawValue
     @State private var viewModel: CatalogViewModel
     @State private var isSortDialogPresented = false
+    @State private var isErrorAlertPresented = false
 
     init(viewModel: CatalogViewModel) {
         _viewModel = State(initialValue: viewModel)
@@ -34,6 +35,12 @@ struct CatalogView: View {
                                 viewModel.startLoadingCollections()
                             }
                         }
+                }
+                if viewModel.isLoading && !viewModel.collections.isEmpty {
+                    ProgressView()
+                        .frame(maxWidth: .infinity)
+                        .listRowSeparator(.hidden)
+                        .listRowBackground(Color.clear)
                 }
             }
             .scrollContentBackground(.hidden)
@@ -68,9 +75,34 @@ struct CatalogView: View {
                 }
                 Button("Close.title", role: .cancel) {}
             }
+            .alert(
+                "Loading.error",
+                isPresented: $isErrorAlertPresented
+            ) {
+                Button("Repeat.word") {
+                    viewModel.retryLoading()
+                }
+
+                Button("Cancel.word", role: .cancel) {
+                    viewModel.clearError()
+                }
+            } message: {
+                Text(viewModel.error?.localizedDescription ?? "Error.unknow")
+            }
+            .onChange(of: viewModel.error != nil) { _, hasError in
+                isErrorAlertPresented = hasError
+            }
             .overlay {
                 if viewModel.isLoading && viewModel.collections.isEmpty {
                     ProgressView()
+                } else if !viewModel.isLoading
+                            && viewModel.collections.isEmpty
+                            && viewModel.error == nil {
+                    ContentUnavailableView(
+                        "Catalog.empty",
+                        systemImage: "square.stack.3d.up",
+                        description: Text("Collection.emptyYet")
+                    )
                 }
             }
         }

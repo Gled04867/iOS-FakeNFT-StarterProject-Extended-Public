@@ -13,7 +13,7 @@ import Observation
 final class CatalogViewModel {
     var collections: [NftCollection] = []
     var isLoading = false
-    var error: Error?
+    var error: CatalogError?
     var sortOption: CatalogSortOption = .byNftCount
 
     private var currentPage = 0
@@ -24,6 +24,55 @@ final class CatalogViewModel {
 
     init(catalogService: CatalogService) {
         self.catalogService = catalogService
+    }
+
+    private func mapError(_ error: Error) -> CatalogError {
+        if let networkError = error as? NetworkClientError {
+            switch networkError {
+            case .httpStatusCode(let statusCode):
+                switch statusCode {
+                case 400..<500:
+                    return .clientError(statusCode)
+                case 500..<600:
+                    return .serverError(statusCode)
+                default:
+                    return .unknownError
+                }
+            case .urlRequestError(let underlyingError):
+                return mapURLError(underlyingError)
+            case .urlSessionError:
+                return .unknownError
+            case .parsingError:
+                return .parsingError
+            case .incorrectRequest:
+                return .requestError
+            }
+        }
+
+        if let urlError = error as? URLError {
+            return mapURLError(urlError)
+        }
+
+        return .unknownError
+    }
+
+    private func mapURLError(_ error: Error) -> CatalogError {
+        guard let urlError = error as? URLError else {
+            return .unknownError
+        }
+
+        switch urlError.code {
+        case .notConnectedToInternet,
+                .cannotFindHost,
+                .cannotConnectToHost,
+                .dnsLookupFailed,
+                .networkConnectionLost:
+            return .networkError
+        case .timedOut:
+            return .timeoutError
+        default:
+            return .networkError
+        }
     }
 
     func startLoadingCollections() {
@@ -64,9 +113,8 @@ final class CatalogViewModel {
         } catch is CancellationError {
             return
         } catch {
-            if Task.isCancelled { return }
-            self.error = error
-            // TODO: add error handling
+            guard !Task.isCancelled else { return }
+            self.error = mapError(error)
         }
     }
 
@@ -81,6 +129,17 @@ final class CatalogViewModel {
         collections.removeAll()
         currentPage = 0
         hasMorePages = true
+        error = nil
+    }
+
+    func retryLoading() {
+        guard error != nil else { return }
+
+        error = nil
+        startLoadingCollections()
+    }
+
+    func clearError() {
         error = nil
     }
 }
