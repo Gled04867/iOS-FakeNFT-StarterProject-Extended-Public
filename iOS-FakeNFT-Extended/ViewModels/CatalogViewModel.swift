@@ -17,7 +17,7 @@ final class CatalogViewModel {
 
     private var currentPage = 0
     private var hasMorePages = true
-    private let pageSize = 25
+    private let pageSize = 5
     private let catalogService: CatalogService
 
     init(catalogService: CatalogService) {
@@ -42,6 +42,7 @@ final class CatalogViewModel {
             currentPage += 1
         } catch {
             self.error = error
+            // TODO: add error handling
         }
     }
 }
