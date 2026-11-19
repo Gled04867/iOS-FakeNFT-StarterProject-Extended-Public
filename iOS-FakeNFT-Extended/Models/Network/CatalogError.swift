@@ -19,19 +19,19 @@ enum CatalogError: LocalizedError {
     var errorDescription: String? {
         switch self {
         case .serverError(let statusCode):
-            return "Error.server (\(statusCode))"
+            return "\(NSLocalizedString("Error.server", comment: "")) (\(statusCode))"
         case .clientError(let statusCode):
-            return "Error.client (\(statusCode))"
+            return "\(NSLocalizedString("Error.client", comment: "")) (\(statusCode))"
         case .networkError:
-            return "Error.network"
+            return NSLocalizedString("Error.network", comment: "")
         case .parsingError:
-            return "Error.parsing"
+            return NSLocalizedString("Error.parsing", comment: "")
         case .requestError:
-            return "Error.request"
+            return NSLocalizedString("Error.request", comment: "")
         case .unknownError:
-            return "Error.unknow"
+            return NSLocalizedString("Error.unknown", comment: "")
         case .timeoutError:
-            return "Error.timeout"
+            return NSLocalizedString("Error.timeout", comment: "")
         }
     }
 }

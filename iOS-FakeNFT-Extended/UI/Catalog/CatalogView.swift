@@ -87,7 +87,7 @@ struct CatalogView: View {
                     viewModel.clearError()
                 }
             } message: {
-                Text(viewModel.error?.localizedDescription ?? "Error.unknow")
+                Text(viewModel.error?.localizedDescription ?? NSLocalizedString("Error.unknown", comment: ""))
             }
             .onChange(of: viewModel.error != nil) { _, hasError in
                 isErrorAlertPresented = hasError

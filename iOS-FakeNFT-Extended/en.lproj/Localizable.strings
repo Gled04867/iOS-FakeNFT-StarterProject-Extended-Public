@@ -11,12 +11,10 @@
 "Loading.error" = "Ошибка загрузки";
 "Repeat.word" = "Повторить";
 "Cancel.word" = "Отмена";
-"Error.unknow" = "Произошла неизвестная ошибка";
 "Catalog.empty" = "Каталог пуст";
 "Collection.emptyYet" = "Коллекция пока отсутствует";
 "Error.server" = "Ошибка сервера";
 "Error.client" = "Ошибка запроса";
-"Error.network" = "Проверьте подключение к интернету";
 "Error.parsing" = "Не удалось обработать полученные данные";
 "Error.request" = "Не удалось выполнить запрос";
 "Error.timeout" = "Сервер не отвечает";

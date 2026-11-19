@@ -26,55 +26,7 @@ final class CatalogViewModel {
         self.catalogService = catalogService
     }
 
-    private func mapError(_ error: Error) -> CatalogError {
-        if let networkError = error as? NetworkClientError {
-            switch networkError {
-            case .httpStatusCode(let statusCode):
-                switch statusCode {
-                case 400..<500:
-                    return .clientError(statusCode)
-                case 500..<600:
-                    return .serverError(statusCode)
-                default:
-                    return .unknownError
-                }
-            case .urlRequestError(let underlyingError):
-                return mapURLError(underlyingError)
-            case .urlSessionError:
-                return .unknownError
-            case .parsingError:
-                return .parsingError
-            case .incorrectRequest:
-                return .requestError
-            }
-        }
-
-        if let urlError = error as? URLError {
-            return mapURLError(urlError)
-        }
-
-        return .unknownError
-    }
-
-    private func mapURLError(_ error: Error) -> CatalogError {
-        guard let urlError = error as? URLError else {
-            return .unknownError
-        }
-
-        switch urlError.code {
-        case .notConnectedToInternet,
-                .cannotFindHost,
-                .cannotConnectToHost,
-                .dnsLookupFailed,
-                .networkConnectionLost:
-            return .networkError
-        case .timedOut:
-            return .timeoutError
-        default:
-            return .networkError
-        }
-    }
-
+    // MARK: - Public Methods
     func startLoadingCollections() {
         guard loadingTask == nil else { return }
 
@@ -141,5 +93,55 @@ final class CatalogViewModel {
 
     func clearError() {
         error = nil
+    }
+
+    // MARK: - Private Methods
+    private func mapError(_ error: Error) -> CatalogError {
+        if let networkError = error as? NetworkClientError {
+            switch networkError {
+            case .httpStatusCode(let statusCode):
+                switch statusCode {
+                case 400..<500:
+                    return .clientError(statusCode)
+                case 500..<600:
+                    return .serverError(statusCode)
+                default:
+                    return .unknownError
+                }
+            case .urlRequestError(let underlyingError):
+                return mapURLError(underlyingError)
+            case .urlSessionError:
+                return .unknownError
+            case .parsingError:
+                return .parsingError
+            case .incorrectRequest:
+                return .requestError
+            }
+        }
+
+        if let urlError = error as? URLError {
+            return mapURLError(urlError)
+        }
+
+        return .unknownError
+    }
+
+    private func mapURLError(_ error: Error) -> CatalogError {
+        guard let urlError = error as? URLError else {
+            return .unknownError
+        }
+
+        switch urlError.code {
+        case .notConnectedToInternet,
+                .cannotFindHost,
+                .cannotConnectToHost,
+                .dnsLookupFailed,
+                .networkConnectionLost:
+            return .networkError
+        case .timedOut:
+            return .timeoutError
+        default:
+            return .networkError
+        }
     }
 }
