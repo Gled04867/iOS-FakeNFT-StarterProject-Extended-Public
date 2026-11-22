@@ -7,7 +7,7 @@ struct TabBarView: View {
                 .tabItem {
                     Label(
                         NSLocalizedString("Tab.catalog", comment: ""),
-                        systemImage: "square.stack.3d.up.fill"
+                        systemImage: SystemImage.squareStack3dUpFill
                     )
                 }
                 .backgroundStyle(.background)

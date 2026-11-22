@@ -10,9 +10,19 @@ import Foundation
 struct NftCollection: Decodable, Sendable {
     let id: String
     let name: String
-    let cover: URL
+    let coverURL: URL
     let nfts: [String]
     let description: String
     let author: String
     let website: URL
+
+    enum CodingKeys: String, CodingKey {
+        case id
+        case name
+        case coverURL = "cover"
+        case nfts
+        case description
+        case author
+        case website
+    }
 }

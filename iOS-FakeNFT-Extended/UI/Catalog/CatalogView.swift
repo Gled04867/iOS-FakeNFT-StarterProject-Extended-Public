@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct CatalogView: View {
-    @AppStorage("catalogSortOption") private var savedSortOption = CatalogSortOption.byNftCount.rawValue
+    @AppStorage(AppStorageKeys.catalogSortOption)
+    private var savedSortOption = CatalogSortOption.byNftCount.rawValue
     @State private var viewModel: CatalogViewModel
     @State private var isSortDialogPresented = false
     @State private var isErrorAlertPresented = false
@@ -120,7 +121,7 @@ struct CatalogView: View {
                             && viewModel.error == nil {
                     ContentUnavailableView(
                         "Catalog.empty",
-                        systemImage: "square.stack.3d.up",
+                        systemImage: SystemImage.squareStack3dUp,
                         description: Text("Collection.emptyYet")
                     )
                 }

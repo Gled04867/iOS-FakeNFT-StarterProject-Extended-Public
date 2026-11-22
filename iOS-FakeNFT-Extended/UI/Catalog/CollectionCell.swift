@@ -12,7 +12,7 @@ struct CollectionCell: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
-            AsyncImage(url: collection.cover) { image in
+            AsyncImage(url: collection.coverURL) { image in
                 image
                     .resizable()
                     .scaledToFill()
