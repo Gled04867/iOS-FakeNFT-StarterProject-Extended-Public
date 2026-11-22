@@ -11,7 +11,53 @@ struct StatisticsView: View {
     }
 
     var body: some View {
+        @Bindable var viewModel = viewModel
+
         NavigationStack {
+            content
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button {
+                            showsSortOptions = true
+                        } label: {
+                            Image(.sort)
+                                .resizable()
+                                .frame(width: 42, height: 42)
+                                .foregroundStyle(.primary)
+                                .frame(width: 44, height: 44)
+                                .contentShape(Rectangle())
+                        }
+                    }
+                }
+        }
+        .onChange(of: sort, initial: true) { _, sort in
+            viewModel.load(sort: sort)
+        }
+        .alert("Statistics.loadError", isPresented: $viewModel.showsLoadError) {
+            Button("Error.cancel", role: .cancel) {}
+            Button("Error.repeat", action: viewModel.retry)
+        }
+        .fullScreenCover(isPresented: $showsSortOptions) {
+            StatisticsSortSheet { selection in
+                sort = selection
+            }
+            .presentationBackground(.clear)
+        }
+    }
+
+    @ViewBuilder
+    private var content: some View {
+        if viewModel.users.isEmpty {
+            switch viewModel.pageState {
+            case .canLoadMore, .loading:
+                ProgressView()
+            case .failed:
+                retryButton
+            case .finished:
+                ContentUnavailableView("Statistics.empty", systemImage: "person.2")
+            }
+        } else {
             List {
                 ForEach(Array(viewModel.users.enumerated()), id: \.element.id) { entry in
                     StatisticsUserRow(user: entry.element, position: entry.offset + 1)
@@ -23,33 +69,33 @@ struct StatisticsView: View {
                             }
                         }
                 }
+
+                pageFooter
+                    .listRowSeparator(.hidden)
             }
             .listStyle(.plain)
             .contentMargins(.top, 16, for: .scrollContent)
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        showsSortOptions = true
-                    } label: {
-                        Image(.sort)
-                            .resizable()
-                            .frame(width: 42, height: 42)
-                            .foregroundStyle(.primary)
-                            .frame(width: 44, height: 44)
-                            .contentShape(Rectangle())
-                    }
-                }
-            }
         }
-        .onChange(of: sort, initial: true) { _, sort in
-            viewModel.load(sort: sort)
+    }
+
+    @ViewBuilder
+    private var pageFooter: some View {
+        switch viewModel.pageState {
+        case .loading:
+            ProgressView()
+                .frame(maxWidth: .infinity)
+        case .failed:
+            retryButton
+        case .canLoadMore, .finished:
+            EmptyView()
         }
-        .fullScreenCover(isPresented: $showsSortOptions) {
-            StatisticsSortSheet { selection in
-                sort = selection
-            }
-            .presentationBackground(.clear)
+    }
+
+    @ViewBuilder
+    private var retryButton: some View {
+        if !viewModel.showsLoadError {
+            Button("Error.repeat", action: viewModel.retry)
+                .frame(maxWidth: .infinity)
         }
     }
 }

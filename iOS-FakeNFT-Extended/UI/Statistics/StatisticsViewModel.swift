@@ -3,17 +3,19 @@ import Observation
 @MainActor
 @Observable
 final class StatisticsViewModel {
-    private enum PageState {
+    enum PageState {
         case canLoadMore
         case loading
+        case failed
         case finished
     }
 
     private(set) var users: [StatisticsUser] = []
+    private(set) var pageState: PageState = .canLoadMore
+    var showsLoadError = false
 
     private let usersService: UsersService
     private let pageSize = 25
-    @ObservationIgnored private var pageState: PageState = .canLoadMore
     @ObservationIgnored private var sort: UsersSort?
     @ObservationIgnored private var nextPage = 0
     @ObservationIgnored private var pageTask: Task<Void, Never>?
@@ -40,9 +42,15 @@ final class StatisticsViewModel {
         requestPage(sort: sort)
     }
 
+    func retry() {
+        guard pageState == .failed, let sort else { return }
+        requestPage(sort: sort)
+    }
+
     private func requestPage(sort: UsersSort) {
         let page = nextPage
         let size = pageSize
+        showsLoadError = false
         pageState = .loading
         pageTask = Task { [weak self, usersService] in
             do {
@@ -51,7 +59,8 @@ final class StatisticsViewModel {
                 self?.appendPage(response)
             } catch {
                 guard !Task.isCancelled else { return }
-                self?.pageState = .canLoadMore
+                self?.pageState = .failed
+                self?.showsLoadError = true
             }
         }
     }
