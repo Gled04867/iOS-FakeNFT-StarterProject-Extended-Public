@@ -14,6 +14,7 @@ final class StatisticsViewModel {
     private let usersService: UsersService
     private let pageSize = 25
     @ObservationIgnored private var pageState: PageState = .canLoadMore
+    @ObservationIgnored private var sort: UsersSort?
     @ObservationIgnored private var nextPage = 0
     @ObservationIgnored private var pageTask: Task<Void, Never>?
 
@@ -25,19 +26,27 @@ final class StatisticsViewModel {
         pageTask?.cancel()
     }
 
-    func load() {
-        guard nextPage == 0 else { return }
-        loadNextPage()
+    func load(sort: UsersSort) {
+        guard self.sort != sort else { return }
+        pageTask?.cancel()
+        self.sort = sort
+        nextPage = 0
+        users = []
+        requestPage(sort: sort)
     }
 
     func loadNextPage() {
-        guard pageState == .canLoadMore else { return }
+        guard pageState == .canLoadMore, let sort else { return }
+        requestPage(sort: sort)
+    }
+
+    private func requestPage(sort: UsersSort) {
         let page = nextPage
         let size = pageSize
         pageState = .loading
         pageTask = Task { [weak self, usersService] in
             do {
-                let response = try await usersService.loadUsers(page: page, size: size, sort: .rating)
+                let response = try await usersService.loadUsers(page: page, size: size, sort: sort)
                 try Task.checkCancellation()
                 self?.appendPage(response)
             } catch {

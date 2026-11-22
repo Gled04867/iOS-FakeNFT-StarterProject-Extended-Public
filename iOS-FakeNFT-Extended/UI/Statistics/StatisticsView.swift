@@ -2,7 +2,9 @@ import SwiftUI
 
 @MainActor
 struct StatisticsView: View {
+    @AppStorage("statistics.sort") private var sort: UsersSort = .rating
     @State private var viewModel: StatisticsViewModel
+    @State private var showsSortOptions = false
 
     init(usersService: UsersService) {
         _viewModel = State(initialValue: StatisticsViewModel(usersService: usersService))
@@ -25,10 +27,90 @@ struct StatisticsView: View {
             .listStyle(.plain)
             .contentMargins(.top, 16, for: .scrollContent)
             .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        showsSortOptions = true
+                    } label: {
+                        Image(.sort)
+                            .resizable()
+                            .frame(width: 42, height: 42)
+                            .foregroundStyle(.primary)
+                            .frame(width: 44, height: 44)
+                            .contentShape(Rectangle())
+                    }
+                }
+            }
         }
-        .onAppear {
-            viewModel.load()
+        .onChange(of: sort, initial: true) { _, sort in
+            viewModel.load(sort: sort)
         }
+        .fullScreenCover(isPresented: $showsSortOptions) {
+            StatisticsSortSheet { selection in
+                sort = selection
+            }
+            .presentationBackground(.clear)
+        }
+    }
+}
+
+private struct StatisticsSortSheet: View {
+    @Environment(\.dismiss) private var dismiss
+    let onSelect: (UsersSort) -> Void
+
+    var body: some View {
+        ZStack(alignment: .bottom) {
+            Color.black
+                .opacity(0.5)
+                .ignoresSafeArea()
+                .onTapGesture { dismiss() }
+
+            VStack(spacing: 8) {
+                VStack(spacing: 0) {
+                    Text("Statistics.sort")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                        .frame(maxWidth: .infinity, minHeight: 42)
+
+                    Divider()
+                    sortButton("Statistics.sort.name", sort: .name)
+                    Divider()
+                    sortButton("Statistics.sort.rating", sort: .rating)
+                }
+                .background(Color(uiColor: .secondarySystemBackground).opacity(0.7))
+                .background(.regularMaterial)
+                .clipShape(.rect(cornerRadius: 13))
+
+                Button(role: .cancel) {
+                    dismiss()
+                } label: {
+                    buttonLabel("Statistics.sort.close", weight: .semibold)
+                }
+                .buttonStyle(.plain)
+                .background(.background, in: .rect(cornerRadius: 13))
+            }
+            .padding(.horizontal, 8)
+            .frame(maxWidth: 420)
+        }
+    }
+
+    private func sortButton(_ title: LocalizedStringKey, sort: UsersSort) -> some View {
+        Button {
+            onSelect(sort)
+            dismiss()
+        } label: {
+            buttonLabel(title)
+        }
+        .buttonStyle(.plain)
+    }
+
+    private func buttonLabel(_ title: LocalizedStringKey, weight: Font.Weight = .regular) -> some View {
+        Text(title)
+            .font(.title3.weight(weight))
+            .foregroundStyle(.tint)
+            .padding(.horizontal, 16)
+            .frame(maxWidth: .infinity, minHeight: 60)
+            .contentShape(Rectangle())
     }
 }
 
