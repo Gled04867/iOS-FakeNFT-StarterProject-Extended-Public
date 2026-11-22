@@ -15,14 +15,19 @@ struct StatisticsView: View {
                     StatisticsUserRow(user: entry.element, position: entry.offset + 1)
                         .listRowInsets(EdgeInsets(top: 4, leading: 16, bottom: 4, trailing: 16))
                         .listRowSeparator(.hidden)
+                        .onAppear {
+                            if entry.element.id == viewModel.users.last?.id {
+                                viewModel.loadNextPage()
+                            }
+                        }
                 }
             }
             .listStyle(.plain)
             .contentMargins(.top, 16, for: .scrollContent)
             .navigationBarTitleDisplayMode(.inline)
         }
-        .task {
-            await viewModel.load()
+        .onAppear {
+            viewModel.load()
         }
     }
 }
