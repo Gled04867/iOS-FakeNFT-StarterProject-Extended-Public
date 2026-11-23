@@ -31,7 +31,7 @@ actor CatalogServiceImpl: CatalogService {
     }
 
     func loadCollection(id: String) async throws -> NftCollection {
-        let request = NftCollectionRequest(id: id)
+        let request = NFTRequest(id: id)
         let collection: NftCollection = try await networkClient.send(request: request)
         return collection
     }
