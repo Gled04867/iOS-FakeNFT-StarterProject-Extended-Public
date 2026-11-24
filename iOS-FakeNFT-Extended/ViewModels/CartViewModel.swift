@@ -1,0 +1,45 @@
+import Foundation
+import Observation
+
+@Observable
+@MainActor
+final class CartViewModel {
+    enum State {
+        case loading
+        case loaded
+        case empty
+        case error
+    }
+
+    private(set) var state: State = .loading
+    private(set) var nfts: [Nft] = []
+
+    var nftCount: Int {
+        nfts.count
+    }
+
+    var totalPrice: Double {
+        nfts.reduce(0) { $0 + $1.price }
+    }
+
+    private let cartService: CartService
+    private var isLoading = false
+
+    init(cartService: CartService) {
+        self.cartService = cartService
+    }
+
+    func loadCart() async {
+        guard !isLoading else { return }
+        isLoading = true
+        defer { isLoading = false }
+
+        state = .loading
+        do {
+            nfts = try await cartService.loadCartNfts()
+            state = nfts.isEmpty ? .empty : .loaded
+        } catch {
+            state = .error
+        }
+    }
+}
