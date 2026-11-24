@@ -53,11 +53,7 @@ struct ProfileController: View {
                 
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            
-     /*   }
-        .padding(.horizontal)
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)*/
-        
+                    
         VStack(spacing: 0) {
             ProfileMenuRow(title: "Мои NFT", count: 112) {
                 print("Переход на Мои NFT")
