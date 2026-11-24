@@ -23,21 +23,20 @@ final class CartViewModel {
     }
 
     private let cartService: CartService
-    private var isLoading = false
 
     init(cartService: CartService) {
         self.cartService = cartService
     }
 
     func loadCart() async {
-        guard !isLoading else { return }
-        isLoading = true
-        defer { isLoading = false }
-
         state = .loading
         do {
             nfts = try await cartService.loadCartNfts()
             state = nfts.isEmpty ? .empty : .loaded
+        } catch is CancellationError {
+            return
+        } catch let error as URLError where error.code == .cancelled {
+            return
         } catch {
             state = .error
         }
