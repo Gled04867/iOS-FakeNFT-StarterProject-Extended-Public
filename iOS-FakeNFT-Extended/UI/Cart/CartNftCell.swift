@@ -15,7 +15,7 @@ struct CartNftCell: View {
                 Text("Cart.price")
                     .font(.caption2)
                     .padding(.top, 8)
-                Text(formattedPrice)
+                Text(nft.price.ethFormatted)
                     .font(.bodyBold)
             }
             .foregroundStyle(Color.ypBlack)
@@ -40,10 +40,6 @@ struct CartNftCell: View {
         }
         .frame(width: 108, height: 108)
         .clipShape(RoundedRectangle(cornerRadius: 12))
-    }
-
-    private var formattedPrice: String {
-        nft.price.formatted(.number.precision(.fractionLength(2))) + " ETH"
     }
 }
 
