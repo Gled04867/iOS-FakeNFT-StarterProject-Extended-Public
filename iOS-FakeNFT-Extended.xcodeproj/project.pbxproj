@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		331DC6BE30B6DF9E008D200A /* Double+ETH.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331DC6BD30B6DF9E008D200A /* Double+ETH.swift */; };
+		331DC6C030B6E2C7008D200A /* CartPaymentPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331DC6BF30B6E2C7008D200A /* CartPaymentPanel.swift */; };
 		336BE9B930B436AF001975EF /* Order.swift in Sources */ = {isa = PBXBuildFile; fileRef = 336BE9B830B436AF001975EF /* Order.swift */; };
 		336BE9BB30B43954001975EF /* OrderRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 336BE9BA30B43954001975EF /* OrderRequest.swift */; };
 		336BE9BD30B43A32001975EF /* OrderService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 336BE9BC30B43A32001975EF /* OrderService.swift */; };
@@ -74,6 +75,7 @@
 
 /* Begin PBXFileReference section */
 		331DC6BD30B6DF9E008D200A /* Double+ETH.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Double+ETH.swift"; sourceTree = "<group>"; };
+		331DC6BF30B6E2C7008D200A /* CartPaymentPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartPaymentPanel.swift; sourceTree = "<group>"; };
 		336BE9B830B436AF001975EF /* Order.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Order.swift; sourceTree = "<group>"; };
 		336BE9BA30B43954001975EF /* OrderRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderRequest.swift; sourceTree = "<group>"; };
 		336BE9BC30B43A32001975EF /* OrderService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderService.swift; sourceTree = "<group>"; };
@@ -164,6 +166,7 @@
 				336BE9C830B599BD001975EF /* CartNftCell.swift */,
 				336BE9CA30B59CDE001975EF /* CartView.swift */,
 				336BE9CC30B59D3F001975EF /* CartTabView.swift */,
+				331DC6BF30B6E2C7008D200A /* CartPaymentPanel.swift */,
 			);
 			path = Cart;
 			sourceTree = "<group>";
@@ -494,6 +497,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				ABC5E1992C31F666002B4068 /* Fonts.swift in Sources */,
+				331DC6C030B6E2C7008D200A /* CartPaymentPanel.swift in Sources */,
 				ABC5E1CF2C32041D002B4068 /* NftDetailViewController.swift in Sources */,
 				ABC5E1B72C31FC70002B4068 /* ServicesAssembly.swift in Sources */,
 				ABC5E19D2C31F6A6002B4068 /* NftStorage.swift in Sources */,
