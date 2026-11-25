@@ -29,7 +29,9 @@ final class CartViewModel {
     }
 
     func loadCart() async {
-        state = .loading
+        if nfts.isEmpty {
+            state = .loading
+        }
         do {
             nfts = try await cartService.loadCartNfts()
             state = nfts.isEmpty ? .empty : .loaded
