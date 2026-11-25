@@ -10,6 +10,13 @@ struct CartView: View {
                 .listRowSeparator(.hidden)
         }
         .listStyle(.plain)
+        .safeAreaInset(edge: .bottom) {
+            CartPaymentPanel(
+                nftCount: viewModel.nftCount,
+                totalPrice: viewModel.totalPrice,
+                onPayTap: {}
+            )
+        }
         .task {
             await viewModel.loadCart()
         }
