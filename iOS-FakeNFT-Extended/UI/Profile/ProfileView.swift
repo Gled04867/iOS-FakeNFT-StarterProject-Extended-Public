@@ -45,7 +45,7 @@ struct ProfileController: View {
                 
                 Text("Дизайнер из Казани, люблю цифровое искусство и бейглы. В моей коллекции уже 100+ NFT, и еще больше — на моём сайте. Открыт к коллаборациям.")
                     .font(.system(size: 13))
-                    .foregroundColor(.backDay)
+                    .foregroundColor(.blackDay)
                 
                 Text("@ivanov")
                     .font(.subheadline)
