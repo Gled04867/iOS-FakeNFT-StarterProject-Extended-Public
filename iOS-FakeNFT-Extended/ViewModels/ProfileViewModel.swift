@@ -13,6 +13,8 @@ class ProfileViewModel: ObservableObject {
     @Published var isLoading = false
     @Published var errorMessage: String?
     
+    @Published var isEditing = false
+    
     var nftCount: Int {
         profile?.nfts.count ?? 0
     }
@@ -34,5 +36,19 @@ class ProfileViewModel: ObservableObject {
                     likes: ["b3907b86-37c4-4e15-95bc-7f8147a9a660"]
                 )
                 isLoading = false
+        
+        /*
+         do {
+         let service = ProfileService()
+                     self.profile = try await service.fetchProfile()
+                 } catch {
+                     print("Ошибка загрузки: \(error)")
+                 }
+             }
+         */
             }
+    
+    func openEditScreen() {
+            isEditing = true
+        }
 }

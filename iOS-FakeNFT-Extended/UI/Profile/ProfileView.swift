@@ -7,13 +7,18 @@
 import SwiftUI
 
 struct ProfileView: View {
+    
+    @StateObject var viewModel = ProfileViewModel()
+    
+    @State private var isEditPresented = false
+    
     var body: some View {
         VStack(spacing: 24) {
             
             HStack {
                 Spacer()
                 Button {
-                    print("Обновить")
+                    viewModel.openEditScreen()
                 } label: {
                     Image("update")
                         .resizable()
@@ -24,16 +29,37 @@ struct ProfileView: View {
             }
             
             HStack(spacing: 16) {
-                Image("avatar")
-                    .resizable()
+                /*Image("avatar")
+                 .resizable()*/
+                if let avatarUrlString = viewModel.profile?.avatar,
+                   let url = URL(string: avatarUrlString) {
+                    
+                    AsyncImage(url: url) { image in
+                        image
+                            .resizable()
+                            .scaledToFill()
+                    } placeholder: {
+                        ProgressView()
+                    }
+                    
+                    
+                    
+                    
                     .scaledToFill()
                     .frame(width: 72, height: 72)
                     .clipShape(Circle())
                     .overlay(
                         Circle().stroke(Color.gray.opacity(0.3), lineWidth: 1)
                     )
+                    
+                } else {
+                    Image("avatar")
+                                .resizable()
+                                .frame(width: 72, height: 72)
+                                .foregroundColor(.gray.opacity(0.5))
+                        }
                 
-                Text("Иван Иванович")
+                Text(viewModel.profile?.name ?? "Загрузка...")
                     .font(.title3)
                     .fontWeight(.semibold)
                 
@@ -43,23 +69,23 @@ struct ProfileView: View {
             
             VStack(alignment: .leading, spacing: 12) {
                 
-                Text("Дизайнер из Казани, люблю цифровое искусство и бейглы. В моей коллекции уже 100+ NFT, и еще больше — на моём сайте. Открыт к коллаборациям.")
+                Text(viewModel.profile?.description ?? "")
                     .font(.system(size: 13))
                     .foregroundColor(.blackDay)
                 
-                Text("@ivanov")
+                Text(viewModel.profile?.website ?? "")
                     .font(.subheadline)
                     .foregroundColor(.blueUniversal)
                 
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-                    
-        VStack(spacing: 0) {
-            ProfileMenuRow(title: "Мои NFT", count: 112) {
-                print("Переход на Мои NFT")
-            }
+            
+            VStack(spacing: 0) {
+                ProfileMenuRow(title: "Мои NFT", count: 112) {
+                    print("Переход на Мои NFT")
+                }
                 
-            ProfileMenuRow(title: "Избранные NFT", count: 11) {
+                ProfileMenuRow(title: "Избранные NFT", count: 11) {
                     print("Переход в Избранное")
                 }
             }
@@ -67,6 +93,12 @@ struct ProfileView: View {
         }
         .padding(.horizontal)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+        .task {
+                    await viewModel.loadProfile()
+                }
+        .fullScreenCover(isPresented: $viewModel.isEditing) {
+            EditProfileView() // Передаем экран редактирования
+        }
     }
 }
 #Preview {
