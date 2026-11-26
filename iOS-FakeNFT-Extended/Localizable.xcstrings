@@ -54,6 +54,17 @@
         }
       }
     },
+    "Collection.author" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Автор коллекции"
+          }
+        }
+      }
+    },
     "Collection.emptyYet" : {
       "localizations" : {
         "en" : {
@@ -210,6 +221,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Каталог"
+          }
+        }
+      }
+    },
+    "Unknown.user" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Неизвестный пользователь"
           }
         }
       }

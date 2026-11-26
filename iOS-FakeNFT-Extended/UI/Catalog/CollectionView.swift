@@ -16,7 +16,50 @@ struct CollectionView: View {
     var body: some View {
         Group {
             if let viewModel {
-                Text("Экран коллекции \(collection.name.prefix(1).uppercased() + collection.name.dropFirst())")
+                ScrollView {
+                    VStack {
+                        AsyncImage(url: viewModel.collection.coverURL) { image in
+                            image
+                                .resizable()
+                                .scaledToFill()
+                        } placeholder: {
+                            ProgressView()
+                        }
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 310)
+                        .clipShape(
+                            UnevenRoundedRectangle(
+                                bottomLeadingRadius: 12,
+                                bottomTrailingRadius: 12
+                            )
+                        )
+                        .padding(.bottom, 8)
+
+                        VStack {
+                            Text("\(viewModel.collection.name.prefix(1).uppercased() + viewModel.collection.name.dropFirst())")
+                                .font(.headline3)
+                                .padding(.vertical, 8)
+
+                            HStack(spacing: 4) {
+                                Text("Collection.author:")
+                                    .font(.caption2)
+
+                                Button {
+
+                                } label: {
+                                    Text(viewModel.user?.name ?? "Unknown.user")
+                                        .font(.caption2)
+                                        .foregroundStyle(.blueUniversal)
+                                }
+                            }
+
+                            Text(viewModel.collection.description)
+                                .font(.caption2)
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.horizontal, 16)
+                    }
+                }
             } else {
                 ProgressView()
             }
