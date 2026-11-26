@@ -17,12 +17,7 @@ struct NftCollection: Decodable, Sendable {
     let website: URL
 
     enum CodingKeys: String, CodingKey {
-        case id
-        case name
+        case id, name, nfts, description, author, website
         case coverURL = "cover"
-        case nfts
-        case description
-        case author
-        case website
     }
 }

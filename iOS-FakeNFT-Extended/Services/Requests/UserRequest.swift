@@ -1,0 +1,16 @@
+//
+//  UserRequest.swift
+//  iOS-FakeNFT-Extended
+//
+//  Created by Олег Сергеевич on 23.11.2026.
+//
+
+import Foundation
+
+struct UserRequest: NetworkRequest {
+    let id: String
+
+    var endpoint: URL? {
+        URL(string: "\(RequestConstants.baseURL)/api/v1/users/\(id)")
+    }
+}
