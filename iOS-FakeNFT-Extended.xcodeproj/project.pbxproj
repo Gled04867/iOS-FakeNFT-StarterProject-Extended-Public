@@ -43,6 +43,7 @@
 		ABC5E1E82C320610002B4068 /* NftDetailBridgeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABC5E1E72C320610002B4068 /* NftDetailBridgeView.swift */; };
 		ABC5E1EB2C32084F002B4068 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = ABC5E1E92C32084F002B4068 /* Localizable.strings */; };
 		C0125E5130B876E9009DE0D5 /* ProfileService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0125E5030B876E4009DE0D5 /* ProfileService.swift */; };
+		C0125E5630B89832009DE0D5 /* ProfileRequests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0125E5530B89830009DE0D5 /* ProfileRequests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -100,6 +101,7 @@
 		ABC5E1E72C320610002B4068 /* NftDetailBridgeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NftDetailBridgeView.swift; sourceTree = "<group>"; };
 		ABC5E1EA2C32084F002B4068 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		C0125E5030B876E4009DE0D5 /* ProfileService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileService.swift; sourceTree = "<group>"; };
+		C0125E5530B89830009DE0D5 /* ProfileRequests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileRequests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -263,6 +265,7 @@
 		ABC5E1AC2C31FB6C002B4068 /* Requests */ = {
 			isa = PBXGroup;
 			children = (
+				C0125E5530B89830009DE0D5 /* ProfileRequests.swift */,
 				ABC5E1B12C31FBD4002B4068 /* ExampleRequest.swift */,
 				ABC5E1AD2C31FB7F002B4068 /* NftByIdRequest.swift */,
 				ABC5E1AF2C31FB90002B4068 /* RequestConstants.swift */,
@@ -485,6 +488,7 @@
 				ABC5E1CB2C3203FC002B4068 /* NftDetailCellModel.swift in Sources */,
 				ABC5E1AB2C31FACD002B4068 /* NftService.swift in Sources */,
 				C0125E5130B876E9009DE0D5 /* ProfileService.swift in Sources */,
+				C0125E5630B89832009DE0D5 /* ProfileRequests.swift in Sources */,
 				ABC5E1B22C31FBD4002B4068 /* ExampleRequest.swift in Sources */,
 				ABC5E1CD2C32040C002B4068 /* NftImageCollectionViewCell.swift in Sources */,
 				ABC5E1A82C31FA90002B4068 /* DateFormatters+Presets.swift in Sources */,
