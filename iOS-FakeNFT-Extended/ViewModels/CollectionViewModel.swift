@@ -11,23 +11,19 @@ import Observation
 @Observable
 @MainActor
 final class CollectionViewModel {
-    var user: User?
     var nfts: [Nft] = []
     var isLoading = false
     var error: Error?
     let collection: NftCollection
-    let catalogService: CatalogService
     let nftService: NftService
 
     private var loadingTask: Task<Void, Never>?
 
     init(
         collection: NftCollection,
-        catalogService: CatalogService,
         nftService: NftService
     ) {
         self.collection = collection
-        self.catalogService = catalogService
         self.nftService = nftService
     }
 
@@ -49,10 +45,6 @@ final class CollectionViewModel {
         defer { isLoading = false }
 
         do {
-            let user = try await catalogService.loadUser(id: collection.author)
-            try Task.checkCancellation()
-            self.user = user
-            
             let nfts = try await nftService.loadNfts(ids: collection.nfts)
             try Task.checkCancellation()
             self.nfts = nfts

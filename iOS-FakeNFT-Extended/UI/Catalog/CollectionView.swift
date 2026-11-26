@@ -35,25 +35,29 @@ struct CollectionView: View {
                         )
                         .padding(.bottom, 8)
 
-                        VStack {
+                        VStack(alignment: .leading) {
                             Text("\(viewModel.collection.name.prefix(1).uppercased() + viewModel.collection.name.dropFirst())")
                                 .font(.headline3)
                                 .padding(.vertical, 8)
+                                .padding(.bottom, 5)
 
                             HStack(spacing: 4) {
-                                Text("Collection.author:")
+                                Text("Collection.author")
                                     .font(.caption2)
 
-                                Button {
-
-                                } label: {
-                                    Text(viewModel.user?.name ?? "Unknown.user")
-                                        .font(.caption2)
+                                NavigationLink(
+                                    destination: AuthorWebsiteView(
+                                        url: viewModel.collection.website
+                                    )
+                                ) {
+                                    Text(viewModel.collection.author)
+                                        .font(.caption1)
                                         .foregroundStyle(.blueUniversal)
                                 }
                             }
+                            .padding(.bottom, 4)
 
-                            Text(viewModel.collection.description)
+                            Text(viewModel.collection.description.prefix(1).uppercased() + viewModel.collection.description.dropFirst())
                                 .font(.caption2)
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)
@@ -68,7 +72,6 @@ struct CollectionView: View {
             if viewModel == nil {
                 viewModel = CollectionViewModel(
                     collection: collection,
-                    catalogService: service.catalogService,
                     nftService: service.nftService
                 )
                 viewModel?.startLoadingCollectionData()

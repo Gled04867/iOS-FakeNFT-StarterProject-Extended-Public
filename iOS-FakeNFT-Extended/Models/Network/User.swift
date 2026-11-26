@@ -11,14 +11,13 @@ struct User: Decodable, Sendable {
     let name: String
     let avatarURL: URL?
     let description: String
-    let websiteURL: URL
+    let website: URL
     let nfts: [String]
     let rating: String
     let id: String
 
     enum CodingKeys: String, CodingKey {
-        case name, description, nfts, rating, id
+        case name, description, nfts, rating, id, website
         case avatarURL = "avatar"
-        case websiteURL = "website"
     }
 }

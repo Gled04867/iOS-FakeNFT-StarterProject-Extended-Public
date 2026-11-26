@@ -127,6 +127,7 @@ struct CatalogView: View {
                 }
             }
         }
+        .tint(.ypBlack)
     }
 
     private func changeSortOption(_ option: CatalogSortOption) {
