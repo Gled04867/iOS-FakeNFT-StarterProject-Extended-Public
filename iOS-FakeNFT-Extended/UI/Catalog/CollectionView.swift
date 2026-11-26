@@ -13,6 +13,8 @@ struct CollectionView: View {
     @State private var isErrorAlertPresented = false
     let collection: NftCollection
 
+    private let columns: [GridItem] = [.init(.adaptive(minimum: 108), spacing: 10)]
+
     var body: some View {
         Group {
             if let viewModel {
@@ -59,11 +61,28 @@ struct CollectionView: View {
 
                             Text(viewModel.collection.description.prefix(1).uppercased() + viewModel.collection.description.dropFirst())
                                 .font(.caption2)
+                                .padding(.bottom, 24)
+
+                            if viewModel.isLoading {
+                                ProgressView()
+                                    .frame(maxWidth: .infinity)
+                            } else {
+                                LazyVGrid(columns: columns, spacing: 8) {
+                                    ForEach(
+                                        Array(viewModel.nfts.enumerated()),
+                                        id: \.offset
+                                    ) { _, nft in
+                                        NftCell(nft: nft)
+                                    }
+                                }
+                            }
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.horizontal, 16)
                     }
                 }
+                .toolbarBackground(.hidden, for: .navigationBar)
+                .ignoresSafeArea(edges: .top)
             } else {
                 ProgressView()
             }
