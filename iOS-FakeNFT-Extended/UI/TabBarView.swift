@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct TabBarView: View {
+    @Environment(ServicesAssembly.self) private var servicesAssembly
+
     var body: some View {
         TabView {
             TestCatalogView()
@@ -11,6 +13,15 @@ struct TabBarView: View {
                     )
                 }
                 .backgroundStyle(.background)
+
+            StatisticsView(usersService: servicesAssembly.usersService)
+                .tabItem {
+                    Label {
+                        Text("Tab.statistics")
+                    } icon: {
+                        Image(.statisticsTab).renderingMode(.template)
+                    }
+                }
         }
     }
 }
