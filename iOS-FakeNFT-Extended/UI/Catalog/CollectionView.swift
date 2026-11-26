@@ -20,15 +20,24 @@ struct CollectionView: View {
             if let viewModel {
                 ScrollView {
                     VStack {
-                        AsyncImage(url: viewModel.collection.coverURL) { image in
-                            image
-                                .resizable()
-                                .scaledToFill()
-                        } placeholder: {
-                            ProgressView()
+                        AsyncImage(url: viewModel.collection.coverURL) { phase in
+                            if let image = phase.image {
+                                image
+                                    .resizable()
+                                    .scaledToFill()
+                            } else if phase.error != nil {
+                                Image(systemName: SystemImage.photo)
+                                    .resizable()
+                                    .scaledToFit()
+                                    .foregroundStyle(.blackUniversal)
+                                    .padding(40)
+                            } else {
+                                ProgressView()
+                            }
                         }
                         .frame(maxWidth: .infinity)
                         .frame(height: 310)
+                        .background(.backgroundUniversal)
                         .clipShape(
                             UnevenRoundedRectangle(
                                 bottomLeadingRadius: 12,
@@ -65,6 +74,10 @@ struct CollectionView: View {
 
                             if viewModel.isLoading {
                                 ProgressView()
+                                    .frame(maxWidth: .infinity)
+                            } else if viewModel.nfts.isEmpty && viewModel.error == nil {
+                                Text("Nfts.empty")
+                                    .font(.caption1)
                                     .frame(maxWidth: .infinity)
                             } else {
                                 LazyVGrid(columns: columns, spacing: 8) {

@@ -179,6 +179,17 @@
         }
       }
     },
+    "Nfts.empty" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "В этой коллекции нет NFT"
+          }
+        }
+      }
+    },
     "Repeat.word" : {
       "localizations" : {
         "en" : {
