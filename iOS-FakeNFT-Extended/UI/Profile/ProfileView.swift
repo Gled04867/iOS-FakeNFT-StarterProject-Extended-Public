@@ -6,7 +6,7 @@
 //
 import SwiftUI
 
-struct ProfileController: View {
+struct ProfileView: View {
     var body: some View {
         VStack(spacing: 24) {
             
@@ -70,5 +70,5 @@ struct ProfileController: View {
     }
 }
 #Preview {
-    ProfileController()
+    ProfileView()
 }
