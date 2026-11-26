@@ -8,9 +8,12 @@ import SwiftUI
 
 struct ProfileView: View {
     
-    @StateObject var viewModel = ProfileViewModel()
-    
     @State private var isEditPresented = false
+    @StateObject private var viewModel: ProfileViewModel
+        
+    init(services: ServicesAssembly) {
+            _viewModel = StateObject(wrappedValue: ProfileViewModel(services: services))
+        }
     
     var body: some View {
         VStack(spacing: 24) {
@@ -101,6 +104,6 @@ struct ProfileView: View {
         }
     }
 }
-#Preview {
+/*#Preview {
     ProfileView()
-}
+}*/

@@ -1,9 +1,12 @@
 import SwiftUI
 
 struct TabBarView: View {
+    
+    let services: ServicesAssembly
+    
     var body: some View {
         TabView {
-            ProfileView()
+            ProfileView(services: services)
                 .tabItem {
                     Label(
                         NSLocalizedString("Профиль", comment: ""),

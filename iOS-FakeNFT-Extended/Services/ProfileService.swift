@@ -17,8 +17,20 @@ protocol ProfileServiceProtocol {
 
 
 class ProfileService: ProfileServiceProtocol {
+    
+    private let networkClient: NetworkClient
+    
+    private let profileId = ""
+    
+    init(networkClient: NetworkClient) {
+            self.networkClient = networkClient
+        }
+    
     func fetchProfile() async throws -> UserProfile {
-        return UserProfile(
+        
+        let request = GetProfileRequest(id: profileId)
+        return try await networkClient.send(request: request)
+       /* return UserProfile(
                     id: "1",
                     name: "Студентус Практикумс",
                     avatar: "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/574.jpg",
@@ -26,14 +38,13 @@ class ProfileService: ProfileServiceProtocol {
                     website: "https://practicum.yandex.ru/async-python/",
                     nfts: [],
                     likes: []
-                )
+                )*/
     }
     
     func updateProfile(name: String, description: String, website: String) async throws -> UserProfile {
-        // Здесь будет URLSession запрос (PUT/PATCH)
-        // Пока возвращаем фейк, чтобы UI работал:
-        
-        return UserProfile(id: "1", name: "name", avatar: "description", description: "website", website: "ccskrf", nfts: ["112"], likes: ["11"])
+        let dto = UpdateProfileDto(name: name, description: description, website: website, avatar: nil)
+                let request = UpdateProfileRequest(id: profileId, dto: dto)
+                return try await networkClient.send(request: request)
     }
     
     func uploadAvatar(imageData: Data) async throws -> String {

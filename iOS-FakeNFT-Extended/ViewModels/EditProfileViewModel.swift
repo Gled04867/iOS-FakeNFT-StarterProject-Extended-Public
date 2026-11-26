@@ -19,7 +19,7 @@ class EditProfileViewModel: ObservableObject {
     private let profileService: ProfileServiceProtocol
     private let currentProfile: UserProfile
     
-    init(profile: UserProfile, service: ProfileServiceProtocol = ProfileService()) {
+    init(profile: UserProfile, service: ProfileServiceProtocol) {
         self.currentProfile = profile
         self.profileService = service
         self.name = profile.name
