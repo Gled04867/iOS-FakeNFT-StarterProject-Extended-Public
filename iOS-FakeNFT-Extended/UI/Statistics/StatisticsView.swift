@@ -5,8 +5,11 @@ struct StatisticsView: View {
     @AppStorage("statistics.sort") private var sort: UsersSort = .rating
     @State private var viewModel: StatisticsViewModel
     @State private var showsSortOptions = false
+    @State private var selectedUserID: String?
+    private let usersService: UsersService
 
     init(usersService: UsersService) {
+        self.usersService = usersService
         _viewModel = State(initialValue: StatisticsViewModel(usersService: usersService))
     }
 
@@ -16,6 +19,9 @@ struct StatisticsView: View {
         NavigationStack {
             content
                 .navigationBarTitleDisplayMode(.inline)
+                .navigationDestination(item: $selectedUserID) { id in
+                    StatisticsUserDetailsView(userID: id, usersService: usersService)
+                }
                 .toolbar {
                     ToolbarItem(placement: .topBarTrailing) {
                         Button {
@@ -60,14 +66,20 @@ struct StatisticsView: View {
         } else {
             List {
                 ForEach(Array(viewModel.users.enumerated()), id: \.element.id) { entry in
-                    StatisticsUserRow(user: entry.element, position: entry.offset + 1)
-                        .listRowInsets(EdgeInsets(top: 4, leading: 16, bottom: 4, trailing: 16))
-                        .listRowSeparator(.hidden)
-                        .onAppear {
-                            if entry.element.id == viewModel.users.last?.id {
-                                viewModel.loadNextPage()
-                            }
+                    Button {
+                        selectedUserID = entry.element.id
+                    } label: {
+                        StatisticsUserRow(user: entry.element, position: entry.offset + 1)
+                            .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
+                    .listRowInsets(EdgeInsets(top: 4, leading: 16, bottom: 4, trailing: 16))
+                    .listRowSeparator(.hidden)
+                    .onAppear {
+                        if entry.element.id == viewModel.users.last?.id {
+                            viewModel.loadNextPage()
                         }
+                    }
                 }
 
                 pageFooter
@@ -178,7 +190,7 @@ private struct StatisticsUserRow: View {
                 .frame(width: positionWidth)
 
             HStack(spacing: 8) {
-                avatar
+                StatisticsAvatarView(avatar: user.avatar, size: avatarSize)
                 Text(verbatim: user.name)
                     .font(.title2.bold())
                     .tracking(0.35)
@@ -198,9 +210,14 @@ private struct StatisticsUserRow: View {
         }
         .foregroundStyle(.primary)
     }
+}
 
-    private var avatar: some View {
-        AsyncImage(url: user.avatar.flatMap { URL(string: $0) }) { phase in
+struct StatisticsAvatarView: View {
+    let avatar: String?
+    let size: CGFloat
+
+    var body: some View {
+        AsyncImage(url: avatar.flatMap { URL(string: $0) }) { phase in
             if let image = phase.image {
                 image.resizable().scaledToFill()
             } else {
@@ -209,7 +226,7 @@ private struct StatisticsUserRow: View {
                     .scaledToFit()
             }
         }
-        .frame(width: avatarSize, height: avatarSize)
+        .frame(width: size, height: size)
         .clipShape(Circle())
     }
 }
@@ -219,17 +236,22 @@ private struct StatisticsUserRow: View {
     StatisticsView(usersService: UsersService(networkClient: StatisticsPreviewClient()))
 }
 
-private struct StatisticsPreviewClient: NetworkClient {
+struct StatisticsPreviewClient: NetworkClient {
     func send(request: NetworkRequest) async throws -> Data {
-        Data("""
-        [
-            {"id": "1", "name": "Алиса", "nfts": ["1", "2", "3", "4", "5"]},
-            {"id": "2", "name": "Марк", "nfts": ["6", "7", "8"]},
-            {"id": "3", "name": "София", "nfts": ["9", "10"]},
-            {"id": "4", "name": "Лев", "nfts": ["11"]},
-            {"id": "5", "name": "Мия", "nfts": []}
+        let users: [[String: Any]] = [
+            ["id": "1", "name": "Алиса", "description": "Коллекционирую цифровое искусство.", "nfts": ["1", "2", "3", "4", "5"]],
+            ["id": "2", "name": "Марк", "nfts": ["6", "7", "8"]],
+            ["id": "3", "name": "София", "nfts": ["9", "10"]],
+            ["id": "4", "name": "Лев", "nfts": ["11"]],
+            ["id": "5", "name": "Мия", "nfts": [String]()]
         ]
-        """.utf8)
+        if let request = request as? UserByIdRequest {
+            guard let user = users.first(where: { $0["id"] as? String == request.id }) else {
+                throw NetworkClientError.httpStatusCode(404)
+            }
+            return try JSONSerialization.data(withJSONObject: user)
+        }
+        return try JSONSerialization.data(withJSONObject: users)
     }
 
     func send<T: Decodable>(request: NetworkRequest) async throws -> T {
