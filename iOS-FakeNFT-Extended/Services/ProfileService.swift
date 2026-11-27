@@ -9,10 +9,7 @@ import Foundation
 protocol ProfileServiceProtocol {
     func fetchProfile() async throws -> UserProfile
     
-    func updateProfile(name: String, description: String, website: String) async throws -> UserProfile
-    
-    func uploadAvatar(imageData: Data) async throws -> String
-    func logout() async throws
+    func updateProfile(name: String, description: String, website: String, avatarUrl: String?) async throws -> UserProfile
 }
 
 
@@ -20,7 +17,7 @@ class ProfileService: ProfileServiceProtocol {
     
     private let networkClient: NetworkClient
     
-    private let profileId = ""
+    private let profileId = "431a48d1-40cf-4242-9b09-492dc61af689"
     
     init(networkClient: NetworkClient) {
             self.networkClient = networkClient
@@ -41,16 +38,9 @@ class ProfileService: ProfileServiceProtocol {
                 )*/
     }
     
-    func updateProfile(name: String, description: String, website: String) async throws -> UserProfile {
-        let dto = UpdateProfileDto(name: name, description: description, website: website, avatar: nil)
+    func updateProfile(name: String, description: String, website: String, avatarUrl: String?) async throws -> UserProfile {
+        let dto = UpdateProfileDto(name: name, description: description, website: website, avatar: avatarUrl)
                 let request = UpdateProfileRequest(id: profileId, dto: dto)
                 return try await networkClient.send(request: request)
-    }
-    
-    func uploadAvatar(imageData: Data) async throws -> String {
-        return "https://example.com/new-avatar.jpg"
-    }
-    
-    func logout() {
     }
 }

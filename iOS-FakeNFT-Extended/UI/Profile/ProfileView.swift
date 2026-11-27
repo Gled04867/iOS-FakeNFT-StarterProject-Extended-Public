@@ -87,11 +87,11 @@ struct ProfileView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             
             VStack(spacing: 0) {
-                ProfileMenuRow(title: "Мои NFT", count: 112) {
+                ProfileMenuRow(title: "Мои NFT", count: viewModel.profile?.nfts.count ?? 0) {
                     print("Переход на Мои NFT")
                 }
                 
-                ProfileMenuRow(title: "Избранные NFT", count: 11) {
+                ProfileMenuRow(title: "Избранные NFT", count: viewModel.profile?.likes.count ?? 0) {
                     print("Переход в Избранное")
                 }
             }

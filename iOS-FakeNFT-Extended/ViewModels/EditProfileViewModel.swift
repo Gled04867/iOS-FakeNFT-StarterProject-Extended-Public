@@ -12,6 +12,8 @@ class EditProfileViewModel: ObservableObject {
     @Published var name: String
     @Published var description: String
     @Published var website: String
+    @Published var avatarUrl: String?
+    
     @Published var selectedImageData: Data?
     @Published var isSaving = false
     @Published var showError = false
@@ -26,6 +28,7 @@ class EditProfileViewModel: ObservableObject {
         self.name = profile.name
         self.description = profile.description
         self.website = profile.website
+        self.avatarUrl = profile.avatar
         self.onSaveSuccess = onSaveSuccess
     }
     
@@ -44,7 +47,8 @@ class EditProfileViewModel: ObservableObject {
                     let updatedProfile = try await profileService.updateProfile(
                                     name: name,
                                     description: description,
-                                    website: website
+                                    website: website,
+                                    avatarUrl: avatarUrl
                                 )
                     onSaveSuccess(updatedProfile)
                                 isSaving = false
