@@ -17,14 +17,16 @@ class EditProfileViewModel: ObservableObject {
     @Published var showError = false
     
     private let profileService: ProfileServiceProtocol
+    private let onSaveSuccess: (UserProfile) -> Void
     private let currentProfile: UserProfile
     
-    init(profile: UserProfile, service: ProfileServiceProtocol) {
+    init(profile: UserProfile, service: ProfileServiceProtocol, onSaveSuccess: @escaping (UserProfile) -> Void) {
         self.currentProfile = profile
         self.profileService = service
         self.name = profile.name
         self.description = profile.description
         self.website = profile.website
+        self.onSaveSuccess = onSaveSuccess
     }
     
     var hasChanges: Bool {
@@ -34,24 +36,23 @@ class EditProfileViewModel: ObservableObject {
         selectedImageData != nil
     }
     
-    func saveProfile() async -> Bool {
-        guard hasChanges else { return true }
+    func saveProfile() async {
         isSaving = true
-        defer { isSaving = false }
-        
-        do {
-            if let imageData = selectedImageData {
-                _ = try await profileService.uploadAvatar(imageData: imageData)
-            }
-            _ = try await profileService.updateProfile(
-                name: name,
-                description: description,
-                website: website
-            )
-            return true
-        } catch {
-            showError = true
-            return false
-        }
+                showError = false
+                
+                do {
+                    let updatedProfile = try await profileService.updateProfile(
+                                    name: name,
+                                    description: description,
+                                    website: website
+                                )
+                    onSaveSuccess(updatedProfile)
+                                isSaving = false
+                                
+                } catch {
+                    print("❌ Ошибка сохранения: \(error)")
+                    isSaving = false
+                    showError = true
+                }
     }
 }

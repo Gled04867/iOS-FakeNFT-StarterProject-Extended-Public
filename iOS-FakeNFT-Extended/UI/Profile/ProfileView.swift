@@ -9,11 +9,14 @@ import SwiftUI
 struct ProfileView: View {
     
     @State private var isEditPresented = false
-    @StateObject private var viewModel: ProfileViewModel
-        
+    @StateObject var viewModel: ProfileViewModel
+    
+    let services: ServicesAssembly
+    
     init(services: ServicesAssembly) {
-            _viewModel = StateObject(wrappedValue: ProfileViewModel(services: services))
-        }
+        self.services = services
+        _viewModel = StateObject(wrappedValue: ProfileViewModel(services: services))
+    }
     
     var body: some View {
         VStack(spacing: 24) {
@@ -57,10 +60,10 @@ struct ProfileView: View {
                     
                 } else {
                     Image("avatar")
-                                .resizable()
-                                .frame(width: 72, height: 72)
-                                .foregroundColor(.gray.opacity(0.5))
-                        }
+                        .resizable()
+                        .frame(width: 72, height: 72)
+                        .foregroundColor(.gray.opacity(0.5))
+                }
                 
                 Text(viewModel.profile?.name ?? "Загрузка...")
                     .font(.title3)
@@ -97,10 +100,19 @@ struct ProfileView: View {
         .padding(.horizontal)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .task {
-                    await viewModel.loadProfile()
-                }
+            await viewModel.loadProfile()
+        }
         .fullScreenCover(isPresented: $viewModel.isEditing) {
-            EditProfileView() // Передаем экран редактирования
+            if let profile = viewModel.profile {
+                EditProfileView(
+                    profile: profile,
+                    services: services,
+                    onSaveSuccess: { updatedProfile in
+                        viewModel.profile = updatedProfile
+                        viewModel.isEditing = false
+                    }
+                )
+            }
         }
     }
 }
