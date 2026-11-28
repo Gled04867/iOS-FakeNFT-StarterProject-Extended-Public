@@ -1,6 +1,4 @@
-//
-//  ProfileView.swift
-//  iOS-FakeNFT-Extended
+
 //
 //  Created by Наринэ  Овсепян on 18.11.2026.
 //
