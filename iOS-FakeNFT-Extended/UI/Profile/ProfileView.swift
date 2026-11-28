@@ -79,9 +79,15 @@ struct ProfileView: View {
                     .font(.system(size: 13))
                     .foregroundColor(.blackDay)
                 
-                Text(viewModel.profile?.website ?? "")
-                    .font(.subheadline)
-                    .foregroundColor(.blueUniversal)
+                if let url = viewModel.websiteURL {
+                        Link(viewModel.profile?.website ?? "", destination: url)
+                            .font(.subheadline)
+                            .foregroundColor(.blueUniversal)
+                    } else {
+                        Text(viewModel.profile?.website ?? "")
+                                    .font(.subheadline)
+                                    .foregroundColor(.blueUniversal)
+                            }
                 
             }
             .frame(maxWidth: .infinity, alignment: .leading)

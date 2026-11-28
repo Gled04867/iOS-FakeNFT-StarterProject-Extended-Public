@@ -27,7 +27,8 @@ class ProfileViewModel: ObservableObject {
     
     var websiteURL: URL? {
             guard let websiteString = profile?.website else { return nil }
-            return URL(string: websiteString)
+        let urlString = websiteString.hasPrefix("http") ? websiteString : "https://\(websiteString)"
+            return URL(string: urlString)
         }
     func loadProfile() async {
             isLoading = true
