@@ -54,101 +54,101 @@ struct EditProfileView: View {
                             .background(.grayLight)
                             .clipShape(Circle())
                             .offset(x: 6, y: 6)
-                    }
-                }
-                .contentShape(Rectangle())
-                .onTapGesture {
-                    isPhotoDialogPresented = true
-                }
-                
-                VStack(alignment: .leading) {
-                    Text("Имя")
-                        .font(.title3)
-                        .fontWeight(.semibold)
-                    
-                    TextField("Введите имя", text: $viewModel.name)
-                        .padding(.horizontal, 16)
-                        .frame(height: 44)
-                        .background(.lightGrey)
-                        .cornerRadius(12)
-                    
-                }
-                
-                VStack(alignment: .leading) {
-                    Text("Описание")
-                        .font(.headline)
-                    
-                    ZStack(alignment: .topLeading) {
-                        RoundedRectangle(cornerRadius: 12)
-                            .fill(Color.lightGrey)
                         
-                        TextEditor(text: $viewModel.description)
-                            .scrollContentBackground(.hidden)
-                            .padding(.horizontal, 12)
-                            .padding(.vertical, 8)
-                            .textContentType(.none)
-                            .autocorrectionDisabled()
                     }
-                    .frame(height: 100)
-                }
-                
-                
-                VStack(alignment: .leading, spacing: 12) {
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        isPhotoDialogPresented = true
+                    }
                     
-                    Text("Сайт").font(.headline)
-                    TextField("Введите сайт", text: $viewModel.website)
-                        .padding(.horizontal, 16)
-                        .frame(height: 44)
-                        .background(.lightGrey)
-                        .cornerRadius(12)
-                        .keyboardType(.URL)
-                    /*.autocapitalization(.none)*/
-                        .textInputAutocapitalization(.never) // Отключает заглавные буквы
+                    VStack(alignment: .leading) {
+                        Text("Имя")
+                            .font(.title3)
+                            .fontWeight(.semibold)
+                        
+                        TextField("Введите имя", text: $viewModel.name)
+                            .padding(.horizontal, 16)
+                            .frame(height: 44)
+                            .background(.lightGrey)
+                            .cornerRadius(12)
+                        
+                    }
                     
-                }
-            }
-            .padding()
-        }
-        .scrollDismissesKeyboard(.interactively)
-        
-        .safeAreaInset(edge: .bottom) {
-            Button {
-                Task { await viewModel.saveProfile()
-                    if !viewModel.showError {
-                        dismiss()
+                    VStack(alignment: .leading) {
+                        Text("Описание")
+                            .font(.headline)
+                        
+                        ZStack(alignment: .topLeading) {
+                            RoundedRectangle(cornerRadius: 12)
+                                .fill(Color.lightGrey)
+                            
+                            TextEditor(text: $viewModel.description)
+                                .scrollContentBackground(.hidden)
+                                .padding(.horizontal, 12)
+                                .padding(.vertical, 8)
+                                .textContentType(.none)
+                                .autocorrectionDisabled()
+                        }
+                        .frame(height: 100)
+                    }
+                    
+                    
+                    VStack(alignment: .leading, spacing: 12) {
+                        
+                        Text("Сайт").font(.headline)
+                        TextField("Введите сайт", text: $viewModel.website)
+                            .padding(.horizontal, 16)
+                            .frame(height: 44)
+                            .background(.lightGrey)
+                            .cornerRadius(12)
+                            .keyboardType(.URL)
+                        /*.autocapitalization(.none)*/
+                            .textInputAutocapitalization(.never) // Отключает заглавные буквы
+                        
                     }
                 }
-            } label: {
-                if viewModel.isSaving {
-                    ProgressView().tint(.white)
-                } else {
-                    Text("Сохранить")
-                }
+                .padding()
             }
-            .font(.system(size: 17, weight: .bold))
-            .frame(maxWidth: .infinity)
-            .padding()
-            .background(Color.blackDay)
-            .foregroundColor(.white)
-            .cornerRadius(16)
-            .padding(.horizontal)
-            .padding(.bottom, 8)
-        }
-        .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
+            .scrollDismissesKeyboard(.interactively)
+            
+            .safeAreaInset(edge: .bottom) {
                 Button {
-                    dismiss()
+                    Task { await viewModel.saveProfile()
+                        if !viewModel.showError {
+                            dismiss()
+                        }
+                    }
                 } label: {
-                    Image(systemName: "chevron.left")
-                        .font(.system(size: 18, weight: .semibold))
-                        .foregroundColor(.primary)
+                    if viewModel.isSaving {
+                        ProgressView().tint(.white)
+                    } else {
+                        Text("Сохранить")
+                    }
+                }
+                .font(.system(size: 17, weight: .bold))
+                .frame(maxWidth: .infinity)
+                .padding()
+                .background(Color.blackDay)
+                .foregroundColor(.white)
+                .cornerRadius(16)
+                .padding(.horizontal)
+                .padding(.bottom, 8)
+            }
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button {
+                        dismiss()
+                    } label: {
+                        Image(systemName: "chevron.left")
+                            .font(.system(size: 18, weight: .semibold))
+                            .foregroundColor(.primary)
+                    }
                 }
             }
-        }
-        .navigationBarTitleDisplayMode(.inline)
-        
-        /*  .sheet(isPresented: $isPhotoDialogPresented) {
-            VStack(spacing: 20) {
+            .navigationBarTitleDisplayMode(.inline)
+            
+            /*  .sheet(isPresented: $isPhotoDialogPresented) {
+             VStack(spacing: 20) {
              Text("Фото профиля")
              .font(.headline)
              .foregroundColor(.secondary)
@@ -207,6 +207,7 @@ struct EditProfileView: View {
             }
         }
     }
+}
 /*#Preview {
      EditProfileView()
      }*/
